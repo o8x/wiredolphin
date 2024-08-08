@@ -18,8 +18,8 @@ using namespace std;
 #define HEX_TABLE_FONT "monospace"
 #endif
 
-#define HEX_TABLE_FONT_SIZE 9
-#define HEX_TABLE_SIDE_LENGTH 23
+#define HEX_TABLE_FONT_SIZE 11
+#define HEX_TABLE_SIDE_LENGTH 18
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -174,13 +174,14 @@ void MainWindow::initWidgets() {
     const int colCount = 17;
     ui->hexTable->setRowCount(0);
     ui->hexTable->setColumnCount(colCount);
-    ui->hexTable->setFont(QFont("", HEX_TABLE_FONT_SIZE, QFont::Normal));
+    ui->hexTable->setFont(QFont("Monaco", HEX_TABLE_FONT_SIZE, QFont::Normal));
     ui->hexTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
     ui->hexTable->horizontalHeader()->setHidden(true);
     ui->hexTable->horizontalHeader()->setVisible(false);
     ui->hexTable->setShowGrid(false);
     ui->hexTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->hexTable->setStyleSheet("QTableWidget::item{padding:0px; border:0px;}");
+    ui->hexTable->setTextElideMode(Qt::ElideNone);
     for (int i = 0; i < colCount; i++) {
         ui->hexTable->setColumnWidth(i, HEX_TABLE_SIDE_LENGTH);
     }
@@ -472,8 +473,11 @@ void MainWindow::tableItemClicked(const QModelIndex& index) {
                 break;
             }
 
+            auto item = new QTableWidgetItem(byte_to_ascii(payload[ind]).c_str());
+            item->setTextAlignment(Qt::AlignCenter | Qt::AlignVCenter);
+
             // TODO 可能是错的，和 Tree 中的 mac 有可能对不上
-            ui->hexTable->setItem(row, j, new QTableWidgetItem(byte_to_ascii(payload[ind]).c_str()));
+            ui->hexTable->setItem(row, j, item);
         }
 
         row++;
